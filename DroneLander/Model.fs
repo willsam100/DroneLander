@@ -30,7 +30,7 @@ type InFlightDetais = {
 }
 with 
     static member Default() = {
-        Altitude = 5000.0; DescentRate = 0.; FuelRemaining = 1000.0; Thrust = 0.; Fuel = 1000.; Veloicty = 0.
+        Altitude = CoreConstants.StartingAltitude; DescentRate = 0.; FuelRemaining = 1000.0; Thrust = 0.; Fuel = 1000.; Veloicty = 0.
     }
    
 type MainViewModel(hasLanded) as this =
@@ -42,12 +42,21 @@ type MainViewModel(hasLanded) as this =
     let isActive () = activeLandingParameters.Altitude > 0. && activeLandingParameters.Altitude < defaultAltitude
     let isNotOnGround () = activeLandingParameters.Altitude > 0.
 
+    let raisePropertiesChanged () = 
+        this.OnPropertyChanged( <@ this.Altitude @>)
+        this.OnPropertyChanged( <@ this.DescentRate @>)
+        this.OnPropertyChanged( <@ this.FuelRemaining @>)
+        this.OnPropertyChanged( <@ this.Thrust @>)
+        this.OnPropertyChanged( <@ this.ActionLabel @>)
+
     let resetLanding () = 
         Task.Delay(500) |> Async.AwaitTask |> Async.StartImmediate
 
         activeLandingParameters <- LandingParameters.Default()
         inFlightDetails <- InFlightDetais.Default()
         this.Throttle <- 0.0
+
+        raisePropertiesChanged()
    
     let updateFlightParameters () =
 
@@ -56,19 +65,20 @@ type MainViewModel(hasLanded) as this =
         // Compute thrust and remaining fuel
         //thrust = throttle * 1200.0;
         let used = (this.Throttle * seconds) / 10.0 |> min activeLandingParameters.Fuel
+        let currentThrust = (used * 25000.0)
 
         // Compute new flight parameters
         let avgmass = CoreConstants.LanderMass + (used / 2.0)
-        let force = activeLandingParameters.Thrust - (avgmass * CoreConstants.Gravity)
+        let force = currentThrust - (avgmass * CoreConstants.Gravity)
         let acc = force / avgmass
 
         let vel2 = activeLandingParameters.Velocity + (acc * seconds)
         let avgvel = (activeLandingParameters.Velocity + vel2) / 2.0
 
         activeLandingParameters <- { activeLandingParameters with 
-                                        Thrust = used * 25000.0
+                                        Thrust = currentThrust
                                         Fuel = activeLandingParameters.Fuel - used
-                                        Altitude = activeLandingParameters.Altitude - (avgvel * seconds)
+                                        Altitude = activeLandingParameters.Altitude + (avgvel * seconds)
                                         Velocity = vel2 }
 
 
@@ -79,15 +89,10 @@ type MainViewModel(hasLanded) as this =
             FuelRemaining = activeLandingParams.Fuel / 1000.
             Thrust = activeLandingParams.Thrust  }
 
-    let raisePropertiesChanged () = 
-        this.OnPropertyChanged( <@ this.Altitude @>)
-        this.OnPropertyChanged( <@ this.DescentRate @>)
-        this.OnPropertyChanged( <@ this.FuelRemaining @>)
-        this.OnPropertyChanged( <@ this.Thrust @>)
+
 
     let startLanding () = 
-        let timer () =
-
+        let update () =
             updateFlightParameters()
 
             if isNotOnGround() then 
@@ -112,16 +117,23 @@ type MainViewModel(hasLanded) as this =
                 raisePropertiesChanged ()
                 false
 
-        Device.StartTimer(TimeSpan.FromMilliseconds(Common.CoreConstants.PollingIncrement |> float), Func<bool>(timer))
+        update () |> ignore
 
+        Device.StartTimer(TimeSpan.FromMilliseconds(Common.CoreConstants.PollingIncrement |> float), fun () -> 
 
+            if (inFlightDetails = InFlightDetais.Default() && activeLandingParameters = LandingParameters.Default()) then 
+                false
+            else
+                update()
+        )
+
+         
     let handleIsActive _ = 
         match isActive () with 
         | true -> 
             resetLanding ()
         | false -> 
             startLanding ()
-        this.OnPropertyChanged( <@ this.ActionLabel @>)
 
     let mutable actionLabel = "Start"
 

@@ -16,7 +16,7 @@ module CoreConstants =
     let LanderMass = 17198.0; // Lander mass (kg)
     let PollingIncrement = 500;
 
-    let StartingAltitude = 5000.0;
+    let StartingAltitude = 1000.0;
     let StartingVelocity = 0.0;
     let StartingFuel = 1000.0;
     let StartingThrust = 0.0;
@@ -56,9 +56,3 @@ type ObservableBase() =
     member x.OnPropertyChanged(expr : Expr) =
         let propName = toPropName(expr)
         x.OnPropertyChanged(propName)
-
-type DecimalDisplayConverter() = 
-    interface IValueConverter with
-        member this.ConvertBack(value, targetType, parameter, culture) = null
-        member this.Convert (value, targetType, parameter, culture) = 
-            (value :?> double).ToString("F0") :> obj
