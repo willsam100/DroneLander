@@ -1,4 +1,4 @@
-﻿﻿namespace DroneLander
+﻿namespace DroneLander
 open DroneLander.Common
 open Xamarin.Forms
 open System.Threading.Tasks
