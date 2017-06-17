@@ -13,15 +13,12 @@
         <StackLayout Padding="40,30">
             <Label Style="{DynamicResource CaptionLabelStyle}" Text="Altitude (meters)" />
             <Label Style="{DynamicResource DisplayLabelStyle}" Text="{Binding Altitude}"/>
-<!--			<Label Style="{DynamicResource DisplayLabelStyle}" Text="{Binding Altitude", Converter={StaticResource DecimalDisplayConverter}}" />-->
 
             <Label Style="{DynamicResource CaptionLabelStyle}" Text="Descent Rate (meters per second)" />
             <Label Style="{DynamicResource DisplayLabelStyle}" Text="{Binding DescentRate}" />
-<!--			<Label Style="{DynamicResource DisplayLabelStyle}" Text="{Binding DescentRate, Converter={StaticResource DecimalDisplayConverter}}" />-->
 
             <Label Style="{DynamicResource CaptionLabelStyle}" Text="Thrust (Newtons)" />
             <Label Style="{DynamicResource DisplayLabelStyle}" Text="{Binding Thrust}" />
-<!--            <Label Style="{DynamicResource DisplayLabelStyle}" Text="{Binding Thrust, Converter={StaticResource DecimalDisplayConverter}}" />-->
 
             <Label Style="{DynamicResource CaptionLabelStyle}" Text="Fuel Remaining" />
             <ProgressBar Progress="{Binding FuelRemaining}" />

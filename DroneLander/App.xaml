@@ -3,10 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="DroneLander.App">
 	<Application.Resources>
-<!--             xmlns:common="clr-namespace:DroneLander.Common;assembly=DroneLander" -->
-
         <ResourceDictionary>
-<!--            <common:DecimalDisplayConverter x:Key="DecimalDisplayConverter"/>-->
 
             <Style x:Key="CaptionLabelStyle" TargetType="Label">                
                 <Setter Property="TextColor" Value="White" />

@@ -30,7 +30,7 @@ type InFlightDetais = {
 }
 with 
     static member Default() = {
-        Altitude = 5000.0; DescentRate = 0.; FuelRemaining = 1000.0; Thrust = 0.; Fuel = 1000.; Veloicty = 0.
+        Altitude = CoreConstants.StartingAltitude; DescentRate = 0.; FuelRemaining = 1000.0; Thrust = 0.; Fuel = 1000.; Veloicty = 0.
     }
    
 type MainViewModel(hasLanded) as this =
@@ -125,7 +125,7 @@ type MainViewModel(hasLanded) as this =
 
     let mutable actionLabel = "Start"
 
-    let relayCommand = RelayCommand(handleIsActive, (fun _ -> true) |> Some)
+    let relayCommand = RelayCommand(handleIsActive, (fun _ -> true))
 
     let doubleToString (d:double) = d.ToString("F0")
 

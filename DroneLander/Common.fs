@@ -21,20 +21,14 @@ module CoreConstants =
     let StartingFuel = 1000.0;
     let StartingThrust = 0.0;
 
-type RelayCommand(execute: (obj -> unit), canExecute: (obj -> bool) option) = 
+type RelayCommand(execute: (obj -> unit), canExecute: (obj -> bool)) = 
     let event = new DelegateEvent<EventHandler>()
-    let handleCanExecute arg =
-        match canExecute with 
-        | None -> true
-        | Some f -> f arg
-
-    new(execute) = RelayCommand(execute, None)
 
     interface ICommand with     
         [<CLIEvent>]
         member this.CanExecuteChanged = event.Publish
 
-        member this.CanExecute arg = handleCanExecute arg
+        member this.CanExecute arg = canExecute arg
         member this.Execute arg = execute arg
 
 type ObservableBase() =
@@ -56,9 +50,3 @@ type ObservableBase() =
     member x.OnPropertyChanged(expr : Expr) =
         let propName = toPropName(expr)
         x.OnPropertyChanged(propName)
-
-type DecimalDisplayConverter() = 
-    interface IValueConverter with
-        member this.ConvertBack(value, targetType, parameter, culture) = null
-        member this.Convert (value, targetType, parameter, culture) = 
-            (value :?> double).ToString("F0") :> obj
