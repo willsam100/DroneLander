@@ -1,4 +1,4 @@
-﻿namespace DroneLander
+﻿﻿namespace DroneLander
 open DroneLander.Common
 open Xamarin.Forms
 open System.Threading.Tasks
@@ -134,8 +134,6 @@ type MainViewModel(hasLanded) as this =
             resetLanding ()
         | false -> 
             startLanding ()
-
-    let mutable actionLabel = "Start"
 
     let relayCommand = RelayCommand(handleIsActive, (fun _ -> true))
 
