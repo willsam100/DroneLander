@@ -16,7 +16,7 @@ module CoreConstants =
     let LanderMass = 17198.0; // Lander mass (kg)
     let PollingIncrement = 500;
 
-    let StartingAltitude = 1000.0;
+    let StartingAltitude = 5000.0;
     let StartingVelocity = 0.0;
     let StartingFuel = 1000.0;
     let StartingThrust = 0.0;
