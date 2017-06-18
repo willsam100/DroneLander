@@ -50,7 +50,7 @@ type MainViewModel(hasLanded) as this =
         this.OnPropertyChanged( <@ this.ActionLabel @>)
 
     let resetLanding () = 
-        Task.Delay(500) |> Async.AwaitTask |> Async.StartImmediate
+        Async.Sleep(500) |> Async.StartImmediate
 
         activeLandingParameters <- LandingParameters.Default()
         inFlightDetails <- InFlightDetais.Default()
@@ -139,7 +139,7 @@ type MainViewModel(hasLanded) as this =
 
     let doubleToString (d:double) = d.ToString("F0")
 
-    member val Throttle = 50.0 with get, set
+    member val Throttle = 00.0 with get, set
     member this.AttemptLandingCommand with get() = relayCommand
     member this.ActionLabel with get() = if isActive() then "Reset" else "Start"
     member this.Altitude with get() = activeLandingParameters.Altitude |> doubleToString

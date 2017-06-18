@@ -1,15 +1,9 @@
 ﻿namespace DroneLander.Common
 open System.Windows.Input
 open System
-open System.Collections.ObjectModel
 open System.ComponentModel
 open Microsoft.FSharp.Quotations
 open Microsoft.FSharp.Quotations.Patterns
-open System.Collections.Generic
-open System.Globalization
-open System.Text
-open System.Threading.Tasks
-open Xamarin.Forms
 
 module CoreConstants = 
     let  Gravity = 3.711;      // Mars gravity (m/s2)
@@ -50,3 +44,16 @@ type ObservableBase() =
     member x.OnPropertyChanged(expr : Expr) =
         let propName = toPropName(expr)
         x.OnPropertyChanged(propName)
+
+
+module Async = 
+
+    let Synchronously xs = 
+        xs |> List.fold (fun acc x -> 
+
+            acc |> function
+            | None -> async {do! x} |> Some
+            | Some action -> 
+                async { 
+                    do! action  
+                    do! x } |> Some ) None
