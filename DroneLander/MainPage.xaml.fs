@@ -3,7 +3,6 @@
 open System
 open Xamarin.Forms
 open Xamarin.Forms.Xaml
-open DroneLander.Common
 
 type MainPage() as this = 
     inherit ContentPage()
@@ -12,8 +11,7 @@ type MainPage() as this =
     let awaitParallel = Array.map Async.AwaitTask >> Async.Parallel >> Async.Ignore
    
     let shakeLandscapeAsync () = 
-        async {
-        
+        let shake =  async {
             do! [|
                     this.ScaleTo(1.1, 20u, Easing.Linear)
                     this.TranslateTo(-30., 0., 20u, Easing.Linear)
@@ -24,8 +22,12 @@ type MainPage() as this =
                     this.ScaleTo(1.0, 20u, Easing.Linear) 
                     this.TranslateTo(0., 0., 20u, Easing.Linear)
                 |] |> awaitParallel
-        
-        } |> List.replicate 8 |> Async.Synchronously |> Option.map Async.StartImmediate |> ignore
+        }
+        async { 
+            for action in List.replicate 8 shake do 
+                do! action 
+        } |> Async.StartImmediate
+
 
     let handleEgaleLanding landingResult message = 
         if (landingResult = LandingResultType.Kaboom) then shakeLandscapeAsync()
@@ -33,5 +35,6 @@ type MainPage() as this =
             this.DisplayAlert(landingResult |> string, message, "OK") |> Async.AwaitTask |> Async.StartImmediate)
 
     do this.BindingContext <- MainViewModel(handleEgaleLanding)
+
 
 
