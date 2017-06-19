@@ -38,7 +38,7 @@ type MainViewModel(hasLanded) as this =
     let defaultAltitude = LandingParameters.Default().Altitude
     let mutable activeLandingParameters = LandingParameters.Default()
     let mutable inFlightDetails = InFlightDetais.Default()
-    let isActive () = activeLandingParameters.Altitude > 0. && activeLandingParameters.Altitude < defaultAltitude
+    let isActive () = activeLandingParameters.Altitude <> defaultAltitude
     let isNotOnGround () = activeLandingParameters.Altitude > 0.
 
     let raisePropertiesChanged () = 
